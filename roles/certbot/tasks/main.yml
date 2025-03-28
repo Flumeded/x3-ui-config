@@ -1,0 +1,65 @@
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - /etc/letsencrypt
+    - /var/lib/letsencrypt
+    - /var/log/letsencrypt
+
+- name: Copy Cloudflare credentials
+  ansible.builtin.copy:
+    src: cloudflare.ini
+    dest: /etc/letsencrypt/cloudflare.ini
+    mode: "0600"
+
+# Probably will not work
+# TODO: Check if working
+- name: Check if fullchain.pem exists
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ certbot_cert_domain }}/fullchain.pem"
+  register: cert_fullchain
+
+- name: Check if privkey.pem exists
+  ansible.builtin.stat:
+    path: "/etc/letsencrypt/live/{{ certbot_cert_domain }}/privkey.pem"
+  register: cert_privkey
+
+- name: Issue certificate using certbot via Docker
+  community.docker.docker_container:
+    name: certbot_run_once
+    image: certbot/dns-cloudflare
+    command: >-
+      certonly --dns-cloudflare
+      --dns-cloudflare-credentials /cloudflare.ini
+      --dns-cloudflare-propagation-seconds 30
+      --non-interactive --agree-tos
+      {% if ansible_check_mode %}--dry-run{% endif %}
+      -m "{{ certbot_email }}"
+      -d "{{ certbot_cert_domain }}"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - /etc/letsencrypt/cloudflare.ini:/cloudflare.ini:ro
+    state: started
+    auto_remove: true
+    detach: false
+  when: not cert_fullchain.stat.exists or not cert_privkey.stat.exists
+
+- name: Copy certbot renewal script from files directory
+  ansible.builtin.copy:
+    src: renew-cert.sh
+    dest: /usr/local/bin/renew-cert.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Ensure cron job is placed in /etc/cron.d
+  ansible.builtin.cron:
+    name: "certbot renew daily"
+    cron_file: renew-cert
+    user: root
+    job: "/usr/local/bin/renew-cert.sh"
+    minute: "0"
+    hour: "3"

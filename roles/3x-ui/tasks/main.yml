@@ -1,0 +1,23 @@
+- name: Clone 3x-ui repository into user home
+  ansible.builtin.git:
+    repo: https://github.com/MHSanaei/3x-ui.git
+    dest: "{{ ansible_env.HOME }}/3x-ui"
+    version: main
+    force: true
+
+- name: Update db volume mount in docker-compose.yml
+  ansible.builtin.replace:
+    path: "{{ ansible_env.HOME }}/3x-ui/docker-compose.yml"
+    regexp: '\$PWD/db/:/etc/x-ui/?'
+    replace: '{{ ansible_env.HOME }}/3x-ui/db:/etc/x-ui'
+
+- name: Update cert volume mount in docker-compose.yml
+  ansible.builtin.replace:
+    path: "{{ ansible_env.HOME }}/3x-ui/docker-compose.yml"
+    regexp: '\$PWD/cert/:/root/cert/?'
+    replace: '/etc/letsencrypt:/root/cert'
+
+- name: Run 3x-ui with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ ansible_env.HOME }}/3x-ui"
+    state: present

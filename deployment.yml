@@ -1,0 +1,13 @@
+- name: Install Docker using geerlingguy.docker
+  hosts: all
+  become: true
+  roles:
+    - geerlingguy.docker
+
+- name: Deploy 3x-ui server with automated cert renewal and dummy website
+  hosts: 3x-ui_host
+  become: true
+  roles:
+    - certbot
+    - website
+    - 3x-ui

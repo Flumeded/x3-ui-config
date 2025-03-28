@@ -1,0 +1,32 @@
+- name: Create website directory on server
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/website"
+    state: directory
+    mode: "0755"
+
+- name: Upload website files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_env.HOME }}/website/"
+    mode: "0644"
+  loop:
+    - index.html
+    - myfiles.html
+    - settings.html
+    - upload.html
+    - style.css
+    - default.conf
+    - Dockerfile
+    - docker-compose.yml
+
+- name: Build website Docker image
+  community.docker.docker_image:
+    name: file-sharing
+    source: build
+    build:
+      path: "{{ ansible_env.HOME }}/website"
+
+- name: Deploy file-sharing container
+  community.docker.docker_compose_v2:
+    project_src: "{{ ansible_env.HOME }}/website"
+    state: present

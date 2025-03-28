@@ -1,0 +1,134 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    color: #333;
+  }
+  
+  /* Header & Navigation */
+  header {
+    background: #007acc;
+    color: #fff;
+    padding: 1rem;
+  }
+  header h1 {
+    display: inline-block;
+    margin-right: 2rem;
+  }
+  nav ul {
+    display: inline-block;
+    list-style: none;
+    vertical-align: middle;
+  }
+  nav li {
+    display: inline;
+    margin: 0 1rem;
+  }
+  nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  nav a:hover {
+    text-decoration: underline;
+  }
+  nav a.active {
+    text-decoration: underline;
+  }
+  
+  /* Main Container */
+  main {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+  
+  /* File List, Forms, etc. */
+  .files-list {
+    list-style: none;
+    margin-top: 1rem;
+  }
+  .files-list li {
+    background: #fafafa;
+    border: 1px solid #ccc;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .files-list button {
+    background: #007acc;
+    border: none;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  /* Forms */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-width: 300px;
+  }
+  label {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="file"] {
+    padding: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  button[type="submit"] {
+    background: #007acc;
+    color: #fff;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button[type="submit"]:hover {
+    background: #005d99;
+  }
+  
+  /* Notes and Alerts */
+  .note {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.5rem;
+  }
+  
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  footer p {
+    margin: 0.5rem 0;
+  }
+  footer a {
+    color: #007acc;
+    text-decoration: none;
+    margin: 0 0.5rem;
+  }
+  footer a:hover {
+    text-decoration: underline;
+  }
